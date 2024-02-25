@@ -1,7 +1,7 @@
 require('dotenv').config(); // Import TOKEN
 
 const { path, album} = require('./album');
-const { library_en, denji } = require('./library');
+const { library_en, library_pt, denji } = require('./library');
 const { Client, IntentsBitField, Attachment } = require('discord.js');
 
 const client = new Client({
@@ -27,8 +27,21 @@ client.on('messageCreate', (msg) => {
 
     let i = 0;
     found = false;
-    
-    while (i < library_en.length && found == false) {
+
+    if (lowercase.includes('lucas')) {
+        console.log('Detected! -> ' + msg.content);
+        reply = `${path}lucas.gif`;
+
+        msg.reply({
+            files: [
+                {
+                    attachment: `${reply}`, name: "lucas.gif"
+                },
+            ]
+        });
+    }
+
+    while (i < denji.length && found == false) {
         if (lowercase.includes(denji[i])) {
             console.log('Detected! -> ' + msg.content);
             reply = `${path}denji.jpg`;
@@ -67,7 +80,29 @@ client.on('messageCreate', (msg) => {
         }
         i++;
     }
-
+    
+    i = 0;
+    while (i < library_pt.length && found == false) {
+        if (lowercase.includes(library_pt[i])) {
+            console.log('Detected! -> ' + msg.content);
+            
+            const gen = Math.floor(Math.random() * album.length);
+            console.log(gen);
+            const image = album[gen];
+            
+            reply = `${path}${image}`;
+    
+            msg.reply({
+                files: [
+                    {
+                        attachment: `${reply}`, name: "reply.gif"
+                    },
+                ]
+            });
+            found = true;
+        }
+        i++;
+    }
 });
 
 client.login(process.env.TOKEN);
